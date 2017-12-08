@@ -1,0 +1,287 @@
+/**
+ * Access Control List for the auction network.
+ */
+rule InstituteFullAccessStudent {
+    description: "Allow the Institute full access to specialization"
+    participant(m): "org.acme.education.blockchain.EducationalInstitution"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.Specialization"
+    condition: (tx.provider.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+rule InstituteFullAccessStudentQualification {
+    description: "Allow the Institute full access to specialization"
+    participant: "org.acme.education.blockchain.EducationalInstitution"
+    operation: ALL
+    resource: "org.acme.education.blockchain.StudentQualification"
+  	action: ALLOW
+}
+
+rule InstituteFullAccessSpecialization {
+    description: "Allow the Institute full access to specialization"
+    participant(m): "org.acme.education.blockchain.EducationalInstitution"
+    operation: ALL
+    resource(v): "org.acme.education.blockchain.Specialization"
+  	condition: (v.provider.getIdentifier() == m.getIdentifier())
+  	action: ALLOW
+}
+
+rule StudentAccessEndorseRequests{
+  	description: "Allow the Student full access to EndorseRequests"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.EndorseRequests"
+  	transaction(tx): "org.acme.education.blockchain.RequestEndorsement"
+    condition: (tx.userId.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+rule StudentAccessEndorseRequests1{
+  	description: "Allow the Student full access to EndorseRequests"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.RequestEndorsement"
+  	transaction(tx): "org.acme.education.blockchain.RequestEndorsement"
+    condition: (tx.userId.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+rule StudentAccessEndorseRequests2{
+  	description: "Allow the Student full access to EndorseRequests"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.RequestEndorsement"
+    condition: (tx.userId.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+rule RecruiterAccessVerifyEmployee {
+    description: "Allow the Recruiter read access to Specialization"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.VerifyEmployee"
+  	transaction(tx): "org.acme.education.blockchain.VerifyEmployee"
+    condition: (tx.appliedTo.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+rule RecruiterAccessStudent {
+    description: "Allow the Recruiter read access to Specialization"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.VerifyEmployee"
+    condition: (tx.appliedTo.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+rule RecruiterAccessStudentQual {
+    description: "Allow the Recruiter read access to Specialization"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.StudentQualification"
+  	transaction(tx): "org.acme.education.blockchain.VerifyEmployee"
+    condition: (tx.appliedTo.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+
+
+
+
+
+rule RecriterReadAccess {
+    description: "Allow the Institute full access to specialization"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+    transaction(tx): "org.acme.education.blockchain.ExperienceCertificate"
+    condition: (tx.employer.getIdentifier() == m.getIdentifier())
+  	action: ALLOW
+}
+
+rule RecriterReadAccessStudentQual {
+    description: "Allow the Institute full access to specialization"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.StudentQualification"
+    transaction(tx): "org.acme.education.blockchain.ExperienceCertificate"
+    condition: (tx.employer.getIdentifier() == m.getIdentifier())
+  	action: ALLOW
+}
+
+
+
+
+rule RecruiterAccessExperienceCerti {
+    description: "Allow the Recruiter write access to Experience Certificate"
+    participant(m): "org.acme.education.blockchain.Recruiter"
+    operation: ALL
+    resource: "org.acme.education.blockchain.ExperienceCertificate"
+    transaction(tx): "org.acme.education.blockchain.ExperienceCertificate"
+  	condition: (tx.employer.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
+
+
+
+
+
+rule StudentAccessSelfProfile {
+    description: "Allow the Student read access to his/her profile"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource(v): "org.acme.education.blockchain.Student"
+    condition: (m.getIdentifier() == v.getIdentifier())
+    action: ALLOW
+}
+
+rule StudentAccesOthersProfile4 {
+    description: "Allow the Student write access to other Students through Connect transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource(v): "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.ConnectTo"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() && v.getIdentifier()==tx.peer.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesEndorseRequests {
+    description: "Allow the Student write access to other Students through Connect transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.EndorseRequests"
+  	transaction(tx): "org.acme.education.blockchain.RequestEndorsement"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesOthersProfile1 {
+    description: "Allow the Student write access to other Students through Connect transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.ConnectTo"
+  	transaction(tx): "org.acme.education.blockchain.ConnectTo"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesOthersProfile2 {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource(v): "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.Approve"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() && v.getIdentifier()==tx.peer.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesOthersProfile {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Approve"
+  	transaction(tx): "org.acme.education.blockchain.Approve"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+} 
+
+rule StudentAccesOthersProfile3 {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Approve"
+  	transaction(tx): "org.acme.education.blockchain.Approve"
+  	condition: (tx.userid.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesSkills1 {
+    description: "Allow the Student write access to other Students through Connect transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.AddSkills"
+  	transaction(tx): "org.acme.education.blockchain.AddSkills"
+  	condition: (tx.student.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesSkills {
+    description: "Allow the Student to add skills to own profile"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource(v): "org.acme.education.blockchain.Skills"
+  	transaction(tx): "org.acme.education.blockchain.AddSkills"
+  	condition: (tx.student.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesSkills2 {
+    description: "Allow the Student write access to other Students through Connect transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.AddSkills"
+  	condition: (tx.student.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesApproveEndorse {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Endorse"
+  	transaction(tx): "org.acme.education.blockchain.ApproveEndorsement"
+  	condition: (tx.userId.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+rule StudentAccesApproveEndorse3 {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.ApproveEndorsement"
+  	transaction(tx): "org.acme.education.blockchain.ApproveEndorsement"
+  	condition: (tx.userId.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesApproveEndorse1 {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Student"
+  	transaction(tx): "org.acme.education.blockchain.ApproveEndorsement"
+  	condition: (tx.userId.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+rule StudentAccesApproveEndorse5 {
+    description: "Allow the Student write access to other Students through Approve transaction"
+    participant(m): "org.acme.education.blockchain.Student"
+    operation: ALL
+    resource: "org.acme.education.blockchain.Skills"
+  	transaction(tx): "org.acme.education.blockchain.ApproveEndorsement"
+  	condition: (tx.userId.getIdentifier() == m.getIdentifier() )
+  	action: ALLOW
+}
+
+
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW  
+}
+

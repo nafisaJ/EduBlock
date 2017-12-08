@@ -1,0 +1,126 @@
+/**
+ * Defines a data model for a blind vehicle auction
+ */
+namespace org.acme.education.blockchain
+
+enum modeOfInstruction {
+o ONLINE
+o FACE_TO_FACE
+}
+
+enum courseLevel {
+o INTRODUCTION
+o UNDERGRADUATE
+o GRADUATE
+}
+
+
+
+asset StudentQualification identified by email {
+  o String email
+  o Specialization[] courses optional
+  o ExperienceCertificate[] experience optional
+  
+}
+
+abstract participant User identified by email {
+  o String email
+  o String name
+  o String address
+}
+
+participant EducationalInstitution extends User {
+  
+}
+
+participant Recruiter extends User {
+}
+
+participant Student identified by email{
+  o String email
+  o String name
+  o StudentQualification qualifications
+  --> Recruiter[] appliedTo optional
+  --> Student[] pendingRequests optional
+  --> Student[] peers optional
+  o Skills[] skills optional
+  o EndorseRequests[] pendingEndorseRequests optional
+}
+
+asset EndorseRequests identified by reqId{
+  o String reqId
+  --> Student requestEndorseFrom
+  --> Skills skillID
+}
+
+asset Skills identified by skillID {
+  o String skillID
+  o String skillName
+  o Double numberOfYearsOfExperience
+  o String urlForPOW default ="https://www.google.com" regex=/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/ 
+  o Endorse[] endorsements optional
+}
+
+asset Endorse identified by refID{
+  o String refID
+  --> Student endorser
+  o String comments
+}
+  
+transaction Specialization {
+  o String title
+  --> EducationalInstitution provider
+  o modeOfInstruction mode
+  --> Student student
+  o courseLevel level
+}
+
+transaction AddSkills{
+  o	Skills skill
+  --> Student student
+}
+
+transaction ExperienceCertificate {
+  o String certificateId
+  o Double numberOfYears
+  o String description
+  --> Recruiter employer
+  --> Student employee
+}
+
+transaction VerifyEmployee {
+  --> Student candidate
+  --> Recruiter appliedTo
+    
+}
+
+transaction RequestEndorsement{
+  --> Skills skill
+  --> Student userId
+  --> Student requestEndorsementFrom
+}
+
+transaction ApproveEndorsement{
+  --> Skills skill
+  --> Student userId
+  --> Student approveEndorsementOf
+  o String comments
+}
+
+transaction ConnectTo{
+  --> Student userid
+  --> Student peer
+  o String message optional
+}
+
+transaction Approve{
+  --> Student userid
+  --> Student peer
+  o String relation optional
+}
+
+event VerificationNotification {
+   --> Student candidate
+}
+
+
